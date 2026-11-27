@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BC Research | 跨市场量化套利与 Delta-Neutral 研发实验室</title>
+    <title>BC Research | 跨市场量化套利系统与实盘业绩展示</title>
     <style>
         :root {
-            --bg-main: #05070b;
-            --bg-sec: #0b0f17;
-            --bg-card: #111723;
-            --bg-card-hover: #161f30;
+            --bg-main: #06090e;
+            --bg-sec: #0b1018;
+            --bg-card: #101722;
+            --bg-card-hover: #151f2e;
             --border: #1e293b;
-            --border-glow: rgba(0, 230, 168, 0.35);
             --text: #e2e8f0;
-            --muted: #94a3b8;
+            --muted: #8b9bb4;
             --green: #00e6a8;
+            --green-dim: rgba(0, 230, 168, 0.12);
             --blue: #38bdf8;
+            --red: #f43f5e;
             --amber: #f59e0b;
             --purple: #a855f7;
             --mono: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
@@ -25,11 +26,11 @@
 
         body {
             background-color: var(--bg-main);
-            background-image: 
-                radial-gradient(circle at 15% 10%, rgba(0, 230, 168, 0.06) 0%, transparent 40%),
-                radial-gradient(circle at 85% 25%, rgba(56, 189, 248, 0.06) 0%, transparent 45%),
-                linear-gradient(to right, rgba(30, 41, 59, 0.18) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(30, 41, 59, 0.18) 1px, transparent 1px);
+            background-image:
+                radial-gradient(circle at 18% 8%, rgba(0, 230, 168, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 82% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 45%),
+                linear-gradient(to right, rgba(30, 41, 59, 0.16) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(30, 41, 59, 0.16) 1px, transparent 1px);
             background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
             color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
@@ -38,7 +39,6 @@
         }
 
         a { color: inherit; text-decoration: none; }
-
         .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
         /* Navbar */
@@ -46,7 +46,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(5, 7, 11, 0.85);
+            background: rgba(6, 9, 14, 0.88);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
         }
@@ -54,53 +54,20 @@
         .nav-inner {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 14px 24px;
+            padding: 13px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand-text { display: flex; flex-direction: column; }
+        .brand-name { font-size: 17px; font-weight: 800; color: #fff; line-height: 1.2; }
+        .brand-sub { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 1px; }
 
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand-name {
-            font-size: 17px;
-            font-weight: 800;
-            color: #fff;
-            letter-spacing: 0.4px;
-            line-height: 1.2;
-        }
-
-        .brand-sub {
-            font-family: var(--mono);
-            font-size: 10px;
-            color: var(--green);
-            letter-spacing: 1px;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 26px;
-            font-size: 14px;
-            color: var(--muted);
-        }
-
+        .nav-links { display: flex; align-items: center; gap: 26px; font-size: 14px; color: var(--muted); }
         .nav-links a:hover { color: #fff; }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .nav-actions { display: flex; align-items: center; gap: 10px; }
 
         .btn-lang {
             background: var(--bg-card);
@@ -113,341 +80,366 @@
             cursor: pointer;
             transition: 0.2s;
         }
-
         .btn-lang:hover { border-color: var(--blue); }
 
         .btn-outline {
             border: 1px solid var(--border);
-            background: transparent;
-            color: #fff;
             padding: 7px 14px;
             border-radius: 7px;
             font-size: 13px;
             font-weight: 600;
             transition: 0.2s;
         }
-
         .btn-outline:hover { border-color: var(--green); color: var(--green); }
 
-        /* Hero Section */
-        .hero {
-            padding: 88px 0 64px 0;
-            text-align: center;
-        }
-
+        /* Hero */
+        .hero { padding: 78px 0 54px 0; text-align: center; }
         .hero-pill {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             padding: 6px 16px;
             border-radius: 999px;
-            background: rgba(0, 230, 168, 0.1);
+            background: var(--green-dim);
             border: 1px solid rgba(0, 230, 168, 0.3);
             color: var(--green);
             font-family: var(--mono);
             font-size: 12.5px;
             font-weight: 600;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
         }
-
         .pulse {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 10px var(--green);
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--green); box-shadow: 0 0 10px var(--green);
             animation: pulse 1.6s infinite;
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.8); }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
         .hero h1 {
-            font-size: clamp(34px, 5vw, 56px);
+            font-size: clamp(32px, 5vw, 54px);
             font-weight: 800;
             line-height: 1.15;
             color: #fff;
-            margin-bottom: 20px;
-            letter-spacing: -0.5px;
+            margin-bottom: 18px;
         }
-
         .gradient-text {
             background: linear-gradient(90deg, #00e6a8 0%, #38bdf8 55%, #a855f7 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .hero p {
-            max-width: 740px;
-            margin: 0 auto 36px auto;
-            font-size: 17px;
-            color: var(--muted);
-        }
-
-        .hero-cta {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
-            margin-bottom: 56px;
-        }
+        .hero p { max-width: 740px; margin: 0 auto 32px auto; font-size: 16.5px; color: var(--muted); }
+        .hero-cta { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 48px; }
 
         .btn-primary {
             background: linear-gradient(135deg, #00e6a8 0%, #059669 100%);
-            color: #04100c;
-            padding: 12px 26px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 15px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            color: #04100c; padding: 12px 26px; border-radius: 8px; font-weight: 700; font-size: 15px; transition: 0.2s;
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 230, 168, 0.25);
-        }
-
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 230, 168, 0.25); }
         .btn-secondary {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: #fff;
-            padding: 12px 26px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 15px;
-            transition: 0.2s;
+            background: var(--bg-card); border: 1px solid var(--border);
+            color: #fff; padding: 12px 26px; border-radius: 8px; font-weight: 600; font-size: 15px; transition: 0.2s;
         }
-
         .btn-secondary:hover { border-color: var(--blue); }
 
-        /* Metrics Strip */
         .metrics-strip {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+            background: var(--bg-sec); border: 1px solid var(--border); border-radius: 14px; padding: 22px;
+        }
+        .metric-item { text-align: center; }
+        .metric-val { font-family: var(--mono); font-size: 25px; font-weight: 800; color: #fff; }
+        .metric-lbl { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+
+        /* Section Header */
+        section { padding: 68px 0; }
+        .sec-header { text-align: center; margin-bottom: 40px; }
+        .sec-tag {
+            font-family: var(--mono); font-size: 12px; color: var(--green);
+            font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;
+        }
+        .sec-title { font-size: 30px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+        .sec-desc { color: var(--muted); max-width: 680px; margin: 0 auto; font-size: 15px; }
+
+        /* ========================================================
+           PART A: 实盘 PnL 收益看板样式
+           ======================================================== */
+        .pnl-kpi-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 16px;
-            background: var(--bg-sec);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 24px;
+            margin-bottom: 20px;
         }
 
-        .metric-item { text-align: center; padding: 6px; }
-        .metric-val {
-            font-family: var(--mono);
-            font-size: 26px;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .metric-lbl { font-size: 13px; color: var(--muted); }
-
-        /* Sections */
-        section { padding: 72px 0; }
-
-        .sec-header {
-            text-align: center;
-            margin-bottom: 44px;
-        }
-
-        .sec-tag {
-            font-family: var(--mono);
-            font-size: 12px;
-            color: var(--blue);
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .sec-title {
-            font-size: 30px;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .sec-desc {
-            color: var(--muted);
-            max-width: 660px;
-            margin: 0 auto;
-            font-size: 15px;
-        }
-
-        /* Grids */
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
-
-        .card {
+        .pnl-kpi {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 26px;
-            transition: all 0.25s ease;
+            border-radius: 10px;
+            padding: 18px 20px;
         }
 
-        .card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-glow);
-            transform: translateY(-3px);
-        }
+        .pnl-kpi-lbl { font-size: 12px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; }
+        .pnl-kpi-val { font-size: 26px; font-weight: 800; font-family: var(--mono); margin: 4px 0; }
+        .pnl-kpi-sub { font-size: 12px; color: var(--muted); }
 
-        .card-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 16px;
-            background: rgba(56, 189, 248, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.25);
-        }
-
-        .card h3 { font-size: 18px; color: #fff; margin-bottom: 10px; }
-        .card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-
-        /* Strategy Matrix Table / Cards */
-        .strat-card {
-            background: var(--bg-card);
+        .chart-card {
+            background: #0d1118;
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
+            padding: 20px 22px;
+            margin-bottom: 18px;
+            position: relative;
         }
 
-        .strat-top {
+        .chart-head {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .strat-pair { font-family: var(--mono); font-size: 17px; font-weight: 800; color: #fff; }
-        .badge {
+        .chart-title { font-size: 14.5px; font-weight: 700; color: #fff; font-family: var(--mono); }
+        .chart-meta { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+        .pnl-svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+        .chart-tooltip {
+            position: absolute;
+            display: none;
+            background: rgba(15, 23, 42, 0.96);
+            border: 1px solid var(--green);
+            color: #fff;
+            padding: 7px 12px;
+            border-radius: 6px;
             font-family: var(--mono);
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 20;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            white-space: nowrap;
+        }
+
+        /* ========================================================
+           PART B: 复刻图二的 PCB 发光电路板系统架构图样式
+           ======================================================== */
+        .pcb-stage {
+            background: #0b0e13;
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 36px 24px;
+            overflow-x: auto;
+            box-shadow: inset 0 0 60px rgba(0, 230, 168, 0.03);
+        }
+
+        .pcb-diagram {
+            min-width: 880px;
+            max-width: 960px;
+            margin: 0 auto;
+            position: relative;
+            font-family: var(--mono);
+        }
+
+        .pcb-box {
+            background: rgba(10, 24, 24, 0.72);
+            border: 1.5px solid var(--green);
+            border-radius: 12px;
+            box-shadow: 0 0 22px rgba(0, 230, 168, 0.12);
+            transition: all 0.25s;
+        }
+
+        .pcb-box:hover {
+            box-shadow: 0 0 32px rgba(0, 230, 168, 0.26);
+        }
+
+        .pcb-top-acp {
+            width: 560px;
+            margin: 0 auto;
+            padding: 22px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .pcb-pill-badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--green);
+            color: var(--green);
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .pcb-sub-item {
+            background: rgba(6, 15, 18, 0.9);
+            border: 1px solid rgba(0, 230, 168, 0.45);
+            border-radius: 8px;
+            padding: 9px 14px;
+            font-size: 12.5px;
+            color: #d1fae5;
+            margin-bottom: 8px;
+            transition: 0.2s;
+        }
+        .pcb-sub-item:last-child { margin-bottom: 0; }
+        .pcb-sub-item:hover {
+            background: rgba(0, 230, 168, 0.15);
+            border-color: var(--green);
+            transform: translateX(3px);
+        }
+
+        /* 虚线外框：BC QUANT ENGINE */
+        .pcb-engine-zone {
+            border: 1.5px dashed rgba(0, 230, 168, 0.45);
+            border-radius: 14px;
+            padding: 28px 24px 24px 24px;
+            position: relative;
+            background: rgba(7, 13, 18, 0.65);
+        }
+
+        .pcb-zone-label {
+            position: absolute;
+            top: -11px;
+            left: 24px;
+            background: #0b0e13;
+            padding: 0 10px;
             font-size: 11px;
-            padding: 3px 9px;
-            border-radius: 5px;
             font-weight: 700;
+            color: var(--green);
+            letter-spacing: 1.5px;
+        }
+
+        .pcb-core-box {
+            width: 560px;
+            margin: 0 auto;
+            padding: 22px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .pcb-strat-item {
+            background: rgba(6, 15, 18, 0.9);
+            border: 1px solid rgba(0, 230, 168, 0.45);
+            border-radius: 8px;
+            padding: 9px 14px;
+            font-size: 12.5px;
+            color: var(--green);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pcb-strat-item:last-child { margin-bottom: 0; }
+        .pcb-strat-item.active-strat {
+            background: rgba(0, 230, 168, 0.15);
+            border-color: var(--green);
+            box-shadow: 0 0 12px rgba(0, 230, 168, 0.2);
+        }
+
+        /* 网关与交易所行 */
+        .pcb-row-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .pcb-gw-card {
+            border-radius: 10px;
+            padding: 14px 12px;
+            text-align: center;
+        }
+
+        .pcb-gw-active {
+            background: rgba(8, 28, 28, 0.85);
+            border: 1.5px solid var(--green);
+            box-shadow: 0 0 18px rgba(0, 230, 168, 0.18);
+        }
+
+        .pcb-gw-dim {
+            background: rgba(17, 22, 30, 0.55);
+            border: 1px solid #232d3f;
+            opacity: 0.48;
+        }
+
+        .pcb-gw-title { font-size: 12px; font-weight: 800; letter-spacing: 0.8px; color: var(--green); }
+        .pcb-gw-dim .pcb-gw-title { color: #94a3b8; }
+        .pcb-gw-sub { font-size: 11px; color: #cbd5e1; margin-top: 3px; }
+
+        .pcb-ex-zone {
+            border: 1px dashed #2d3848;
+            border-radius: 14px;
+            padding: 22px 24px 18px 24px;
+            position: relative;
+            margin-top: 6px;
+        }
+        .pcb-ex-zone .pcb-zone-label { color: #64748b; }
+
+        .pcb-ex-active {
+            background: #0d131d;
+            border: 1.5px solid #cbd5e1;
+            box-shadow: 0 0 16px rgba(255, 255, 255, 0.08);
+        }
+        .pcb-ex-active .pcb-gw-title { color: #fff; font-size: 13px; }
+
+        /* SVG 走线连接层 */
+        .pcb-wires { width: 100%; display: block; overflow: visible; }
+
+        /* 策略矩阵与风控卡片 */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .strat-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px;
+            transition: 0.25s;
+        }
+        .strat-card:hover { border-color: rgba(0, 230, 168, 0.4); transform: translateY(-2px); }
+        .strat-top {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 12px; border-bottom: 1px solid var(--border);
+        }
+        .strat-pair { font-family: var(--mono); font-size: 16.5px; font-weight: 800; color: #fff; }
+        .badge {
+            font-family: var(--mono); font-size: 11px; padding: 3px 9px; border-radius: 5px; font-weight: 700;
         }
         .b-green { background: rgba(0, 230, 168, 0.14); color: var(--green); }
         .b-blue { background: rgba(56, 189, 248, 0.14); color: var(--blue); }
         .b-amber { background: rgba(245, 158, 11, 0.14); color: var(--amber); }
 
         .kv-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            padding: 4px 0;
-            border-bottom: 1px dashed rgba(30, 41, 59, 0.7);
+            display: flex; justify-content: space-between; font-size: 13px;
+            padding: 5px 0; border-bottom: 1px dashed rgba(30, 41, 59, 0.7);
         }
         .kv-row span:first-child { color: var(--muted); }
         .kv-row span:last-child { font-family: var(--mono); color: #fff; font-weight: 600; }
 
-        /* Interactive Demo Widget */
-        .demo-box {
-            background: var(--bg-sec);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 28px;
-            display: grid;
-            grid-template-columns: 1.1fr 1fr;
-            gap: 28px;
-            align-items: center;
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; transition: 0.25s;
         }
+        .card:hover { background: var(--bg-card-hover); border-color: rgba(56, 189, 248, 0.4); }
+        .card h3 { font-size: 17px; color: #fff; margin: 12px 0 8px 0; }
+        .card p { font-size: 13.5px; color: var(--muted); }
 
-        .terminal-sim {
-            background: #040609;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 18px;
-            font-family: var(--mono);
-            font-size: 12.5px;
-            line-height: 1.7;
-        }
-
-        .t-green { color: var(--green); }
-        .t-blue { color: var(--blue); }
-        .t-amber { color: var(--amber); }
-        .t-muted { color: #64748b; }
-
-        /* Architecture Flow */
-        .arch-flow {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .arch-layer {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 16px 22px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .arch-left { display: flex; align-items: center; gap: 14px; }
-        .arch-num {
-            font-family: var(--mono);
-            font-size: 12px;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 5px;
-            background: rgba(0, 230, 168, 0.14);
-            color: var(--green);
-        }
-
-        .arch-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-        .arch-tag {
-            font-family: var(--mono);
-            font-size: 11.5px;
-            background: #080b12;
-            border: 1px solid var(--border);
-            padding: 3px 9px;
-            border-radius: 5px;
-            color: var(--blue);
-        }
-
-        /* Footer */
         footer {
-            border-top: 1px solid var(--border);
-            padding: 40px 0;
-            margin-top: 40px;
-            color: var(--muted);
-            font-size: 13.5px;
+            border-top: 1px solid var(--border); padding: 36px 0; margin-top: 30px;
+            color: var(--muted); font-size: 13.5px;
         }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
 
-        .footer-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        @media (max-width: 900px) {
-            .metrics-strip, .grid-3, .grid-2, .demo-box { grid-template-columns: 1fr; }
+        @media (max-width: 920px) {
+            .metrics-strip, .pnl-kpi-grid, .grid-3 { grid-template-columns: 1fr; }
             .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 顶部导航栏 -->
+    <!-- 顶部导航 -->
     <nav>
         <div class="nav-inner">
             <a href="#" class="brand">
-                <!-- BC Research 专属双翼棱镜矢量 Logo -->
                 <svg width="38" height="38" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                     <rect x="10" y="10" width="180" height="180" rx="38" fill="#0d1320" stroke="#26354f" stroke-width="6"/>
                     <polygon points="100,34 38,154 74,154 100,98" fill="#00e6a8"/>
@@ -462,22 +454,22 @@
             </a>
 
             <div class="nav-links">
+                <a href="#performance" data-i18n="nav_pnl">实盘 PnL 业绩</a>
                 <a href="#architecture" data-i18n="nav_arch">系统架构</a>
                 <a href="#strategies" data-i18n="nav_strat">策略矩阵</a>
                 <a href="#risk" data-i18n="nav_risk">风控体系</a>
-                <a href="#engine" data-i18n="nav_demo">实时引擎</a>
             </div>
 
             <div class="nav-actions">
                 <a href="https://quant-expert.vercel.app" target="_blank" class="btn-outline" data-i18n="nav_portal">Quant Expert 主站 ↗</a>
-                <button class="btn-lang" onclick="toggleLang()" id="langBtn">EN / 中文</button>
+                <button class="btn-lang" onclick="toggleLang()">EN / 中文</button>
             </div>
         </div>
     </nav>
 
     <div class="container">
 
-        <!-- Hero 主视觉区 -->
+        <!-- Hero -->
         <div class="hero">
             <div class="hero-pill">
                 <span class="pulse"></span>
@@ -491,11 +483,10 @@
                 BC Research 专注于去中心化链上订单簿（Hyperliquid DEX）与传统机构流动性（MT5 CFD）之间的基差回归与资金费率套利。通过纯 Maker 挂单捕获价差与盘口点差，结合毫秒级 WebSocket 事件驱动对冲，实现净敞口动态归零。
             </p>
             <div class="hero-cta">
-                <a href="#strategies" class="btn-primary" data-i18n="cta_explore">探索实盘策略矩阵</a>
-                <a href="https://www.mql5.com/en/users/1033341469" target="_blank" class="btn-secondary" data-i18n="cta_mql5">访问 Bo Chen (MQL5) ↗</a>
+                <a href="#performance" class="btn-primary" data-i18n="cta_pnl">查看 30 天实盘 PnL 曲线</a>
+                <a href="#architecture" class="btn-secondary" data-i18n="cta_arch">查看系统电路架构图</a>
             </div>
 
-            <!-- 4大核心工程指标 -->
             <div class="metrics-strip">
                 <div class="metric-item">
                     <div class="metric-val" style="color:var(--green);">Delta = 0</div>
@@ -516,16 +507,195 @@
             </div>
         </div>
 
-        <!-- Section 1: 核心策略矩阵 -->
+        <!-- ========================================================
+             SECTION 1: 实盘 PnL 收益表现 (2026-10-29 ~ 2026-11-27)
+             ======================================================== -->
+        <section id="performance">
+            <div class="sec-header">
+                <div class="sec-tag">VERIFIED LIVE PERFORMANCE</div>
+                <h2 class="sec-title" data-i18n="pnl_title">实盘套利净值表现 (2026-10-29 ~ 2026-11-27)</h2>
+                <p class="sec-desc" data-i18n="pnl_desc">真实小资金实盘测试账户（Hyperliquid + MT5 合并净收益，已扣除双边手续费、点差与隔夜库存费），验证净值曲线的平滑爬坡能力。</p>
+            </div>
+
+            <!-- 4个 PnL KPI 卡片 -->
+            <div class="pnl-kpi-grid">
+                <div class="pnl-kpi">
+                    <div class="pnl-kpi-lbl" data-i18n="pk1_l">30天合并累计净利 (Cumulative PnL)</div>
+                    <div class="pnl-kpi-val" style="color:var(--green);" id="kpiTotal">+$69.30 USD</div>
+                    <div class="pnl-kpi-sub" data-i18n="pk1_s">双边小资金实盘 (~$550本金 / 月化+12.6%)</div>
+                </div>
+                <div class="pnl-kpi">
+                    <div class="pnl-kpi-lbl" data-i18n="pk2_l">日度盈亏分布 (Win / Loss Days)</div>
+                    <div class="pnl-kpi-val" style="color:var(--blue);" id="kpiWinLoss">14 盈 / 4 亏</div>
+                    <div class="pnl-kpi-sub" data-i18n="pk2_s">交易日胜率 77.8% (其余为无机会空仓日)</div>
+                </div>
+                <div class="pnl-kpi">
+                    <div class="pnl-kpi-lbl" data-i18n="pk3_l">单日最高盈利 (Best Day)</div>
+                    <div class="pnl-kpi-val" style="color:var(--green);" id="kpiBest">+$14.80 USD</div>
+                    <div class="pnl-kpi-sub" data-i18n="pk3_s">2026-11-19 (波动率放大集中收割)</div>
+                </div>
+                <div class="pnl-kpi">
+                    <div class="pnl-kpi-lbl" data-i18n="pk4_l">最大单日回撤 (Max Daily Loss)</div>
+                    <div class="pnl-kpi-val" style="color:var(--red);" id="kpiWorst">-$2.40 USD</div>
+                    <div class="pnl-kpi-sub" data-i18n="pk4_s">盈亏比极其健康，回撤在隔天迅速收复</div>
+                </div>
+            </div>
+
+            <!-- 图表 1: 每日合并盈亏柱状图 -->
+            <div class="chart-card" id="barCard">
+                <div class="chart-head">
+                    <span class="chart-title">Combined PnL by Day (USD) — 每日双边合并净盈亏</span>
+                    <span class="chart-meta" data-i18n="hover_tip">💡 鼠标悬停柱子查看当日精确数据</span>
+                </div>
+                <div class="chart-tooltip" id="barTooltip"></div>
+                <svg id="dailyBarSvg" class="pnl-svg" viewBox="0 0 1120 260"></svg>
+            </div>
+
+            <!-- 图表 2: 累计盈亏净值曲线 -->
+            <div class="chart-card" id="cumCard">
+                <div class="chart-head">
+                    <span class="chart-title">Cumulative PnL Over Period (USD) — 累计净利润增长曲线</span>
+                    <span class="chart-meta">2026-10-29 → 2026-11-27</span>
+                </div>
+                <div class="chart-tooltip" id="cumTooltip"></div>
+                <svg id="cumLineSvg" class="pnl-svg" viewBox="0 0 1120 250"></svg>
+            </div>
+        </section>
+
+        <!-- ========================================================
+             SECTION 2: 1:1 复刻图二的 PCB 发光电路板系统架构图
+             ======================================================== -->
+        <section id="architecture">
+            <div class="sec-header">
+                <div class="sec-tag">SYSTEM ARCHITECTURE</div>
+                <h2 class="sec-title" data-i18n="arch_title">BC Research 全景电路系统架构图</h2>
+                <p class="sec-desc" data-i18n="arch_desc">顶部总控面板统一调度中间层的核心交易引擎，通过多网关协议同时直连链上 Perp DEX 与传统 MT5 经纪商。</p>
+            </div>
+
+            <div class="pcb-stage">
+                <div class="pcb-diagram">
+
+                    <!-- 1. 顶部盒子: BC ACP -->
+                    <div class="pcb-box pcb-top-acp">
+                        <div>
+                            <div style="font-size:15px; font-weight:800; color:var(--green);">
+                                BC ACP <span class="pcb-pill-badge">PRODUCTION</span>
+                            </div>
+                            <div style="font-size:12px; color:var(--muted); margin-top:10px; line-height:1.6;">
+                                Arbitrage Control Panel<br>
+                                <span data-i18n="pcb_acp_d">多策略进程调度、参数热配置与监控总控台</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:10.5px; color:var(--muted); margin-bottom:6px; letter-spacing:1px;">FEATURES</div>
+                            <div class="pcb-sub-item">Real-time Monitor (5s Spread)</div>
+                            <div class="pcb-sub-item">Strategy Configurator (JSON)</div>
+                            <div class="pcb-sub-item">PnL &amp; Funding Report</div>
+                            <div class="pcb-sub-item">8-Layer Risk &amp; Holiday Guard</div>
+                        </div>
+                    </div>
+
+                    <!-- 垂直连接线: ACP -> TRADING CORE -->
+                    <svg class="pcb-wires" height="44" viewBox="0 0 960 44">
+                        <line x1="480" y1="0" x2="480" y2="44" stroke="#00e6a8" stroke-width="2"/>
+                        <circle cx="480" cy="22" r="3.5" fill="#00e6a8"/>
+                    </svg>
+
+                    <!-- 2. 中间大虚线区域: BC QUANT ENGINE -->
+                    <div class="pcb-engine-zone">
+                        <div class="pcb-zone-label">BC QUANT ENGINE · CORE ARCHITECTURE</div>
+
+                        <div class="pcb-box pcb-core-box">
+                            <div>
+                                <div style="font-size:15px; font-weight:800; color:var(--green);">TRADING CORE</div>
+                                <div style="font-size:12px; color:var(--muted); margin-top:10px; line-height:1.6;">
+                                    <span data-i18n="pcb_core_d">统一报价、订单追踪与跨市场对冲模型（Bot + Hedger 双核）</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="font-size:10.5px; color:var(--muted); margin-bottom:6px; letter-spacing:1px;">STRATEGIES</div>
+                                <div class="pcb-strat-item"><span>fixed_level</span><span style="font-size:10px; color:var(--muted);">Spread Basis</span></div>
+                                <div class="pcb-strat-item"><span>bollinger</span><span style="font-size:10px; color:var(--muted);">Z-Score Mean</span></div>
+                                <div class="pcb-strat-item active-strat"><span>grid</span><span style="font-size:10px;">● ACTIVE (Alo)</span></div>
+                                <div class="pcb-strat-item"><span>custom</span><span style="font-size:10px; color:var(--muted);">Swap + Funding</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 分流连接线: TRADING CORE -> 4个 GATEWAY -->
+                        <svg class="pcb-wires" height="58" viewBox="0 0 912 58">
+                            <!-- 主干下引线（居中偏右对准 Strategies 出口） -->
+                            <path d="M 550 0 L 550 26 L 340 26 L 340 58" fill="none" stroke="#00e6a8" stroke-width="2"/>
+                            <path d="M 550 26 L 800 26 L 800 58" fill="none" stroke="#00e6a8" stroke-width="2"/>
+                            <!-- 预留接口虚线 -->
+                            <path d="M 340 26 L 112 26 L 112 58" fill="none" stroke="#26354f" stroke-width="1.5" stroke-dasharray="4,4"/>
+                            <path d="M 550 26 L 570 26 L 570 58" fill="none" stroke="#26354f" stroke-width="1.5" stroke-dasharray="4,4"/>
+                        </svg>
+
+                        <!-- 4个 GATEWAY 卡片 -->
+                        <div class="pcb-row-4">
+                            <div class="pcb-gw-card pcb-gw-dim">
+                                <div class="pcb-gw-title">GATEWAY</div>
+                                <div class="pcb-gw-sub">Kraken (Standby)</div>
+                            </div>
+                            <div class="pcb-gw-card pcb-gw-active">
+                                <div class="pcb-gw-title">GATEWAY</div>
+                                <div class="pcb-gw-sub" style="color:#fff; font-weight:700;">HyperLiquid (Active)</div>
+                            </div>
+                            <div class="pcb-gw-card pcb-gw-dim">
+                                <div class="pcb-gw-title">GATEWAY</div>
+                                <div class="pcb-gw-sub">Lighter (Standby)</div>
+                            </div>
+                            <div class="pcb-gw-card pcb-gw-active">
+                                <div class="pcb-gw-title">GATEWAY</div>
+                                <div class="pcb-gw-sub" style="color:#fff; font-weight:700;">MT5 (Active)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 垂直连接线: GATEWAYS -> EXCHANGES -->
+                    <svg class="pcb-wires" height="44" viewBox="0 0 960 44">
+                        <line x1="138" y1="0" x2="138" y2="44" stroke="#26354f" stroke-width="1.5" stroke-dasharray="4,4"/>
+                        <line x1="366" y1="0" x2="366" y2="44" stroke="#00e6a8" stroke-width="2"/>
+                        <line x1="594" y1="0" x2="594" y2="44" stroke="#26354f" stroke-width="1.5" stroke-dasharray="4,4"/>
+                        <line x1="822" y1="0" x2="822" y2="44" stroke="#00e6a8" stroke-width="2"/>
+                    </svg>
+
+                    <!-- 3. 底部外部交易所区域: EXCHANGES & PLATFORMS -->
+                    <div class="pcb-ex-zone">
+                        <div class="pcb-zone-label">EXCHANGES &amp; PLATFORMS</div>
+                        <div class="pcb-row-4">
+                            <div class="pcb-gw-card pcb-gw-dim">
+                                <div class="pcb-gw-title">KRAKEN</div>
+                                <div class="pcb-gw-sub">crypto exchange</div>
+                            </div>
+                            <div class="pcb-gw-card pcb-ex-active">
+                                <div class="pcb-gw-title">HYPERLIQUID</div>
+                                <div class="pcb-gw-sub">on-chain perps (HIP-3)</div>
+                            </div>
+                            <div class="pcb-gw-card pcb-gw-dim">
+                                <div class="pcb-gw-title">LIGHTER</div>
+                                <div class="pcb-gw-sub">on-chain perps</div>
+                            </div>
+                            <div class="pcb-gw-card pcb-ex-active">
+                                <div class="pcb-gw-title">MT5</div>
+                                <div class="pcb-gw-sub">IC Markets CFD brokers</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: 策略矩阵 -->
         <section id="strategies">
             <div class="sec-header">
-                <div class="sec-tag">STRATEGY MATRIX</div>
+                <div class="sec-tag">LIVE STRATEGY MATRIX</div>
                 <h2 class="sec-title" data-i18n="strat_title">多资产跨市场套利策略矩阵</h2>
                 <p class="sec-desc" data-i18n="strat_desc">覆盖主流 G10 外汇与亚洲核心股指，针对每个品种的利息差（Swap vs Funding）与盘口结构定制公允定价中心。</p>
             </div>
 
             <div class="grid-3">
-                <!-- JPY -->
                 <div class="strat-card">
                     <div class="strat-top">
                         <span class="strat-pair">xyz:JPY ↔ USDJPY</span>
@@ -535,14 +705,13 @@
                         利用美日货币利率差与 Hyperliquid 贴水结构，围绕资金费率与隔夜息均衡点执行双向均值回归网格。
                     </p>
                     <div>
-                        <div class="kv-row"><span data-i18n="lbl_center">公允网格中心 (Center)</span><span>-0.080 JPY</span></div>
-                        <div class="kv-row"><span data-i18n="lbl_step">网格间距 (Grid Step)</span><span>0.040 JPY (4 Pips)</span></div>
-                        <div class="kv-row"><span data-i18n="lbl_fx">点值折算 (FX Pair)</span><span>USDJPY (Dynamic)</span></div>
-                        <div class="kv-row"><span data-i18n="lbl_lev">杠杆配置 (Leverage)</span><span>20x Isolated</span></div>
+                        <div class="kv-row"><span data-i18n="lbl_center">公允网格中心</span><span>-0.080 JPY</span></div>
+                        <div class="kv-row"><span data-i18n="lbl_step">网格间距</span><span>0.040 JPY (4 Pips)</span></div>
+                        <div class="kv-row"><span data-i18n="lbl_fx">点值折算</span><span>USDJPY (Dynamic)</span></div>
+                        <div class="kv-row"><span data-i18n="lbl_lev">杠杆配置</span><span>20x Isolated</span></div>
                     </div>
                 </div>
 
-                <!-- EUR -->
                 <div class="strat-card">
                     <div class="strat-top">
                         <span class="strat-pair">xyz:EUR ↔ EURUSD</span>
@@ -552,14 +721,13 @@
                         捕获欧美汇率在链上 DEX 的正向溢价，空 HL 多 MT5 赚取价差收敛与 HL 每小时正向资金费双重收益。
                     </p>
                     <div>
-                        <div class="kv-row"><span data-i18n="lbl_center">公允网格中心 (Center)</span><span>-0.0005 / 0.0000</span></div>
-                        <div class="kv-row"><span data-i18n="lbl_step">网格间距 (Grid Step)</span><span>0.0005 (5 Micro-pips)</span></div>
+                        <div class="kv-row"><span data-i18n="lbl_center">公允网格中心</span><span>-0.0005 / 0.0000</span></div>
+                        <div class="kv-row"><span data-i18n="lbl_step">网格间距</span><span>0.0005 (5 Micro-pips)</span></div>
                         <div class="kv-row"><span data-i18n="lbl_unit">对冲标准单元</span><span>1,000 EUR = 0.01 Lot</span></div>
-                        <div class="kv-row"><span data-i18n="lbl_lev">杠杆配置 (Leverage)</span><span>30x Isolated</span></div>
+                        <div class="kv-row"><span data-i18n="lbl_lev">杠杆配置</span><span>30x Isolated</span></div>
                     </div>
                 </div>
 
-                <!-- JP225 -->
                 <div class="strat-card">
                     <div class="strat-top">
                         <span class="strat-pair">xyz:JP225 ↔ JP225</span>
@@ -569,132 +737,45 @@
                         通过纯 Maker (Post-Only) 挂单赚取日经 225 链上宽盘口点差（20~35 点），搭配毫秒级 MT5 股指 CFD 对冲。
                     </p>
                     <div>
-                        <div class="kv-row"><span data-i18n="lbl_center">历史价差均值 (Mean)</span><span>-4.10 Index Pts</span></div>
+                        <div class="kv-row"><span data-i18n="lbl_center">历史价差均值</span><span>-4.10 Index Pts</span></div>
                         <div class="kv-row"><span data-i18n="lbl_entry">1σ 开平仓区间</span><span>-60 / +50 → -5.0</span></div>
                         <div class="kv-row"><span data-i18n="lbl_fx">日元点值校准</span><span>USDJPY + Tick Guard</span></div>
-                        <div class="kv-row"><span data-i18n="lbl_lev">杠杆配置 (Leverage)</span><span>20x Isolated</span></div>
+                        <div class="kv-row"><span data-i18n="lbl_lev">杠杆配置</span><span>20x Isolated</span></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 2: 5层系统架构 -->
-        <section id="architecture">
-            <div class="sec-header">
-                <div class="sec-tag">SYSTEM ARCHITECTURE</div>
-                <h2 class="sec-title" data-i18n="arch_title">五层解耦工业级交易架构</h2>
-                <p class="sec-desc" data-i18n="arch_desc">交易执行引擎与 Web 控制面板完全进程隔离，支持多品种并发独立运行与断线亚秒级自动重连。</p>
-            </div>
-
-            <div class="arch-flow">
-                <div class="arch-layer">
-                    <div class="arch-left">
-                        <span class="arch-num">LAYER 01</span>
-                        <div>
-                            <strong style="color:#fff;" data-i18n="l1_t">可视化控制面板与实时数据看板</strong>
-                            <div style="font-size:13px; color:var(--muted);" data-i18n="l1_d">支持 1m 历史价差分布分析（Mean / ±1σ / ±2σ）、PnL 报表统计、双终端日志流与参数热重载。</div>
-                        </div>
-                    </div>
-                    <div class="arch-tags"><span class="arch-tag">Plotly Dash</span><span class="arch-tag">Flask</span><span class="arch-tag">Tkinter ACP</span></div>
-                </div>
-
-                <div class="arch-layer">
-                    <div class="arch-left">
-                        <span class="arch-num" style="background:rgba(56,189,248,0.14); color:var(--blue);">LAYER 02</span>
-                        <div>
-                            <strong style="color:#fff;" data-i18n="l2_t">Bot Core 主报价引擎 (Quoting Leg)</strong>
-                            <div style="font-size:13px; color:var(--muted);" data-i18n="l2_d">5 秒滑动均值价差采样，锚定 MT5 实时 Tick 计算目标价，每 0.5s 调用 amend_order 动态改单追价。</div>
-                        </div>
-                    </div>
-                    <div class="arch-tags"><span class="arch-tag">Python 3.11+</span><span class="arch-tag">asyncio</span><span class="arch-tag">Alo Post-Only</span></div>
-                </div>
-
-                <div class="arch-layer">
-                    <div class="arch-left">
-                        <span class="arch-num" style="background:rgba(168,85,247,0.14); color:var(--purple);">LAYER 03</span>
-                        <div>
-                            <strong style="color:#fff;" data-i18n="l3_t">Hedger Core 极速对冲与对账引擎 (Hedging Leg)</strong>
-                            <div style="font-size:13px; color:var(--muted);" data-i18n="l3_d">Fast Path 监听 HL userFills 成交流毫秒级市价对冲；Slow Path 每 15s 自动校准双边净敞口。</div>
-                        </div>
-                    </div>
-                    <div class="arch-tags"><span class="arch-tag">userFills WS</span><span class="arch-tag">Market IOC</span><span class="arch-tag">15s Reconcile</span></div>
-                </div>
-
-                <div class="arch-layer">
-                    <div class="arch-left">
-                        <span class="arch-num" style="background:rgba(245,158,11,0.14); color:var(--amber);">LAYER 04</span>
-                        <div>
-                            <strong style="color:#fff;" data-i18n="l4_t">独立隔离交易所连接器与安全签名网关</strong>
-                            <div style="font-size:13px; color:var(--muted);" data-i18n="l4_d">本地 EIP-712 Agent API Wallet 签名（仅有交易权、无提币权）；MT5 C-API 独立进程池毫秒级通信。</div>
-                        </div>
-                    </div>
-                    <div class="arch-tags"><span class="arch-tag">Hyperliquid SDK</span><span class="arch-tag">EIP-712 Agent</span><span class="arch-tag">MetaTrader5 API</span></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 3: 8重风控体系 -->
+        <!-- SECTION 4: 风控体系 -->
         <section id="risk">
             <div class="sec-header">
-                <div class="sec-tag">INSTITUTIONAL RISK MANAGEMENT</div>
+                <div class="sec-tag">RISK MANAGEMENT</div>
                 <h2 class="sec-title" data-i18n="risk_title">实盘八重硬风控与防休市保护体系</h2>
                 <p class="sec-desc" data-i18n="risk_desc">专为解决 DEX (7×24) 与传统 CFD (24×5) 跨市场机制差异而设计的全天候安全护栏。</p>
             </div>
 
             <div class="grid-3">
                 <div class="card">
-                    <div class="card-icon">🛡️</div>
+                    <div style="font-size:24px;">🛡️</div>
                     <h3 data-i18n="r1_t">MT5 行情心跳防休市门控</h3>
-                    <p data-i18n="r1_d">自动校验终端连接状态及 MT5 Tick 时间戳新鲜度。遇到美国感恩节、圣诞节提前休市或临时停盘时，立刻拦截 HL 开单并撤销排队挂单，杜绝单边裸奔。</p>
+                    <p data-i18n="r1_d">自动校验终端连接状态及 MT5 Tick 时间戳新鲜度。遇到美国感恩节、圣诞节提前休市或临时停盘时，立刻拦截 HL 开单并撤销排队挂单。</p>
                 </div>
                 <div class="card">
-                    <div class="card-icon">⚖️</div>
+                    <div style="font-size:24px;">⚖️</div>
                     <h3 data-i18n="r2_t">双边保证金与强平距离熔断</h3>
-                    <p data-i18n="r2_d">开单前预先核算两端所需保证金，实时监控 HL 强平距离（MIN_LIQ_DISTANCE）与 MT5 预付款维持率，任一端跌破安全红线立即触发双边保护平仓。</p>
+                    <p data-i18n="r2_d">开单前预先核算两端所需保证金，实时监控 HL 强平距离与 MT5 预付款维持率，任一端跌破安全红线立即触发保护平仓。</p>
                 </div>
                 <div class="card">
-                    <div class="card-icon">🔐</div>
+                    <div style="font-size:24px;">🔐</div>
                     <h3 data-i18n="r3_t">Agent 密钥权限物理隔离</h3>
-                    <p data-i18n="r3_d">云服务器仅部署 Hyperliquid 授权的 API 代理私钥（无任何提币或资金划转权限），主钱包冷存储离线隔离，从架构底层杜绝密钥泄露风险。</p>
+                    <p data-i18n="r3_d">云服务器仅部署 Hyperliquid 授权的 API 代理私钥（仅有交易权、无提币权），主钱包冷存储离线隔离，保障资金绝对安全。</p>
                 </div>
             </div>
         </section>
 
-        <!-- Section 4: 实时引擎状态演示 -->
-        <section id="engine">
-            <div class="demo-box">
-                <div>
-                    <div class="sec-tag">LIVE EXECUTION SNAPSHOT</div>
-                    <h2 style="font-size:26px; color:#fff; margin-bottom:14px;" data-i18n="demo_t">核心哲学：Trade Your Equity Curve</h2>
-                    <p style="font-size:14.5px; color:var(--muted); margin-bottom:18px;" data-i18n="demo_d">
-                        承袭自 Turtle Multi Pro 与 Quant Expert 的净值控制理念——不预测市场单边涨跌，只专注捕捉跨市场结构性价差与资金费率失衡，用严格数学纪律实现净值曲线的平滑增长。
-                    </p>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <span class="badge b-green">✓ Zero Gas Order Cancel</span>
-                        <span class="badge b-blue">✓ Multi-Magic Isolation</span>
-                        <span class="badge b-amber">✓ Swap-Aware Fair Center</span>
-                    </div>
-                </div>
-
-                <div class="terminal-sim">
-                    <div class="t-muted">=== BC Research · Arbitrage Engine Live Stream ===</div>
-                    <div>[BOT] <span class="t-blue">xyz:JP225</span> bid: 58454 | <span class="t-blue">MT5 JP225</span> bid: 58516</div>
-                    <div>[SPREAD] 5s_avg: <span class="t-green">-62.0 pts</span> (&lt;= -60.0 BUY_ENTRY)</div>
-                    <div>[GATES] <span class="t-green">8/8 PASSED</span> | MT5 Tick Age: 0.4s (Market Open)</div>
-                    <div>[QUOTE] <span class="t-amber">Alo Post-Only BUY 0.007 JP225 @ 58456</span></div>
-                    <div>[FILL] <span class="t-green">⚡ WS userFills: +0.007 JP225 FILLED (Fee: 0.00)</span></div>
-                    <div>[HEDGER] <span class="t-blue">🚀 Fast Path -> MT5 SELL 1.00 Lot @ 58516 (Magic:99997)</span></div>
-                    <div>[PARITY] HL: +$409.2 | MT5: -$370.3 | <span class="t-green">Locked Spread: +60.0 pts</span></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 页脚 -->
         <footer>
             <div class="footer-inner">
-                <div>
-                    <strong style="color:#fff;">BC Research</strong> — Founded by <strong style="color:#fff;">Bo Chen (Kuiying)</strong> · Quantitative Strategist
-                </div>
+                <div><strong style="color:#fff;">BC Research</strong> — Founded by <strong style="color:#fff;">Bo Chen (Kuiying)</strong> · Quantitative Strategist</div>
                 <div style="display:flex; gap:20px;">
                     <a href="https://quant-expert.vercel.app" target="_blank">Quant Expert</a>
                     <a href="https://www.mql5.com/en/users/1033341469" target="_blank">MQL5 Profile</a>
@@ -706,64 +787,276 @@
     </div>
 
 <script>
+    // =========================================================
+    // 1. 实盘 PnL 数据源 (完全对应你 2026-10-29 ~ 2026-11-27 截图)
+    //    日后只需在这里追加新日期和当日净利，图表会自动重绘！
+    // =========================================================
+    const PNL_DATA = [
+        { date: "2026-10-29", pnl: -0.70 },
+        { date: "2026-10-30", pnl:  9.30 },
+        { date: "2026-10-31", pnl:  0.00 },
+        { date: "2026-11-01", pnl:  0.00 },
+        { date: "2026-11-02", pnl:  1.00 },
+        { date: "2026-11-03", pnl:  0.00 },
+        { date: "2026-11-04", pnl:  0.60 },
+        { date: "2026-11-05", pnl:  0.80 },
+        { date: "2026-11-06", pnl:  1.40 },
+        { date: "2026-11-07", pnl:  0.00 },
+        { date: "2026-11-08", pnl:  0.00 },
+        { date: "2026-11-09", pnl:  1.00 },
+        { date: "2026-11-10", pnl:  0.60 },
+        { date: "2026-11-11", pnl:  4.30 },
+        { date: "2026-11-12", pnl: 13.40 },
+        { date: "2026-11-13", pnl:  7.60 },
+        { date: "2026-11-14", pnl:  0.00 },
+        { date: "2026-11-15", pnl:  0.00 },
+        { date: "2026-11-16", pnl:  0.80 },
+        { date: "2026-11-17", pnl:  0.70 },
+        { date: "2026-11-18", pnl:  0.60 },
+        { date: "2026-11-19", pnl: 14.80 },
+        { date: "2026-11-20", pnl: -2.40 },
+        { date: "2026-11-21", pnl:  0.00 },
+        { date: "2026-11-22", pnl:  0.00 },
+        { date: "2026-11-23", pnl: 11.40 },
+        { date: "2026-11-24", pnl:  4.10 },
+        { date: "2026-11-25", pnl: -1.20 },
+        { date: "2026-11-26", pnl:  1.70 },
+        { date: "2026-11-27", pnl: -0.50 }
+    ];
+
+    function renderPnLCharts() {
+        const ns = "http://www.w3.org/2000/svg";
+        const barSvg = document.getElementById("dailyBarSvg");
+        const cumSvg = document.getElementById("cumLineSvg");
+        const barTip = document.getElementById("barTooltip");
+        const cumTip = document.getElementById("cumTooltip");
+
+        // 计算累计值
+        let running = 0;
+        const series = PNL_DATA.map(d => {
+            running += d.pnl;
+            return { ...d, cum: Number(running.toFixed(2)) };
+        });
+
+        // 绘图通用边距
+        const padL = 55, padR = 25, padT = 20, padB = 42;
+        const W = 1120, H1 = 260, H2 = 250;
+        const plotW = W - padL - padR;
+
+        // ---------- 1. 绘制每日 PnL 柱状图 ----------
+        const yMin1 = -4, yMax1 = 16;
+        const mapY1 = v => padT + ((yMax1 - v) / (yMax1 - yMin1)) * (H1 - padT - padB);
+        const zeroY = mapY1(0);
+
+        [15, 10, 5, 0, -3].forEach(val => {
+            const y = mapY1(val);
+            const line = document.createElementNS(ns, "line");
+            line.setAttribute("x1", padL); line.setAttribute("x2", W - padR);
+            line.setAttribute("y1", y); line.setAttribute("y2", y);
+            line.setAttribute("stroke", val === 0 ? "#64748b" : "#1e293b");
+            if (val === 0) line.setAttribute("stroke-dasharray", "4,4");
+            barSvg.appendChild(line);
+
+            const txt = document.createElementNS(ns, "text");
+            txt.setAttribute("x", padL - 10); txt.setAttribute("y", y + 4);
+            txt.setAttribute("fill", "#8b9bb4"); txt.setAttribute("font-size", "11");
+            txt.setAttribute("font-family", "monospace"); txt.setAttribute("text-anchor", "end");
+            txt.textContent = val;
+            barSvg.appendChild(txt);
+        });
+
+        const stepX = plotW / series.length;
+        const barW = Math.max(10, stepX * 0.62);
+
+        series.forEach((d, i) => {
+            const cx = padL + i * stepX + stepX / 2;
+            const yVal = mapY1(d.pnl);
+            const barH = Math.abs(yVal - zeroY);
+            const barY = d.pnl >= 0 ? yVal : zeroY;
+
+            const rect = document.createElementNS(ns, "rect");
+            rect.setAttribute("x", cx - barW / 2);
+            rect.setAttribute("y", Math.max(padT, barY));
+            rect.setAttribute("width", barW);
+            rect.setAttribute("height", Math.max(1.5, barH));
+            rect.setAttribute("rx", "2");
+            rect.setAttribute("fill", d.pnl > 0 ? "#4ade80" : (d.pnl < 0 ? "#f87171" : "#334155"));
+            rect.style.cursor = "pointer";
+
+            rect.addEventListener("mouseenter", (e) => {
+                rect.setAttribute("opacity", "0.8");
+                barTip.style.display = "block";
+                barTip.innerHTML = `${d.date}<br>当日盈亏: <strong style="color:${d.pnl >= 0 ? '#4ade80' : '#f87171'}">${d.pnl >= 0 ? '+' : ''}$${d.pnl.toFixed(2)}</strong>`;
+                const box = document.getElementById("barCard").getBoundingClientRect();
+                barTip.style.left = Math.min(box.width - 170, e.clientX - box.left + 12) + "px";
+                barTip.style.top = (e.clientY - box.top - 45) + "px";
+            });
+            rect.addEventListener("mouseleave", () => {
+                rect.setAttribute("opacity", "1");
+                barTip.style.display = "none";
+            });
+            barSvg.appendChild(rect);
+
+            // X轴日期标签（每隔 2 天显示一个避免拥挤）
+            if (i % 2 === 0 || i === series.length - 1) {
+                const dt = document.createElementNS(ns, "text");
+                dt.setAttribute("x", cx); dt.setAttribute("y", H1 - 12);
+                dt.setAttribute("fill", "#8b9bb4"); dt.setAttribute("font-size", "10");
+                dt.setAttribute("font-family", "monospace"); dt.setAttribute("text-anchor", "middle");
+                dt.textContent = d.date.slice(5);
+                barSvg.appendChild(dt);
+            }
+        });
+
+        // ---------- 2. 绘制累计 PnL 折线图 ----------
+        const yMin2 = -5, yMax2 = 78;
+        const mapY2 = v => padT + ((yMax2 - v) / (yMax2 - yMin2)) * (H2 - padT - padB);
+
+        [70, 60, 50, 40, 30, 20, 10, 0].forEach(val => {
+            const y = mapY2(val);
+            const line = document.createElementNS(ns, "line");
+            line.setAttribute("x1", padL); line.setAttribute("x2", W - padR);
+            line.setAttribute("y1", y); line.setAttribute("y2", y);
+            line.setAttribute("stroke", val === 0 ? "#64748b" : "#1e293b");
+            if (val === 0) line.setAttribute("stroke-dasharray", "4,4");
+            cumSvg.appendChild(line);
+
+            const txt = document.createElementNS(ns, "text");
+            txt.setAttribute("x", padL - 10); txt.setAttribute("y", y + 4);
+            txt.setAttribute("fill", "#8b9bb4"); txt.setAttribute("font-size", "11");
+            txt.setAttribute("font-family", "monospace"); txt.setAttribute("text-anchor", "end");
+            txt.textContent = "$" + val;
+            cumSvg.appendChild(txt);
+        });
+
+        let pts = "";
+        let areaPts = "";
+        series.forEach((d, i) => {
+            const cx = padL + i * stepX + stepX / 2;
+            const cy = mapY2(d.cum);
+            pts += `${cx},${cy} `;
+            if (i === 0) areaPts += `${cx},${mapY2(0)} `;
+            areaPts += `${cx},${cy} `;
+            if (i === series.length - 1) areaPts += `${cx},${mapY2(0)}`;
+        });
+
+        // 渐变填充区域
+        const defs = document.createElementNS(ns, "defs");
+        defs.innerHTML = `<linearGradient id="cumGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4ade80" stop-opacity="0.28"/>
+            <stop offset="100%" stop-color="#4ade80" stop-opacity="0.0"/>
+        </linearGradient>`;
+        cumSvg.appendChild(defs);
+
+        const polyArea = document.createElementNS(ns, "polygon");
+        polyArea.setAttribute("points", areaPts);
+        polyArea.setAttribute("fill", "url(#cumGrad)");
+        cumSvg.appendChild(polyArea);
+
+        const polyLine = document.createElementNS(ns, "polyline");
+        polyLine.setAttribute("points", pts.trim());
+        polyLine.setAttribute("fill", "none");
+        polyLine.setAttribute("stroke", "#4ade80");
+        polyLine.setAttribute("stroke-width", "2.8");
+        cumSvg.appendChild(polyLine);
+
+        // 数据圆点与悬停提示
+        series.forEach((d, i) => {
+            const cx = padL + i * stepX + stepX / 2;
+            const cy = mapY2(d.cum);
+
+            const dot = document.createElementNS(ns, "circle");
+            dot.setAttribute("cx", cx); dot.setAttribute("cy", cy);
+            dot.setAttribute("r", "4"); dot.setAttribute("fill", "#4ade80");
+            dot.setAttribute("stroke", "#06090e"); dot.setAttribute("stroke-width", "1.5");
+            dot.style.cursor = "pointer";
+
+            dot.addEventListener("mouseenter", (e) => {
+                dot.setAttribute("r", "6.5");
+                cumTip.style.display = "block";
+                cumTip.innerHTML = `${d.date}<br>累计净利: <strong style="color:#4ade80;">+$${d.cum.toFixed(2)}</strong>`;
+                const box = document.getElementById("cumCard").getBoundingClientRect();
+                cumTip.style.left = Math.min(box.width - 170, e.clientX - box.left + 12) + "px";
+                cumTip.style.top = (e.clientY - box.top - 45) + "px";
+            });
+            dot.addEventListener("mouseleave", () => {
+                dot.setAttribute("r", "4");
+                cumTip.style.display = "none";
+            });
+            cumSvg.appendChild(dot);
+
+            if (i % 2 === 0 || i === series.length - 1) {
+                const dt = document.createElementNS(ns, "text");
+                dt.setAttribute("x", cx); dt.setAttribute("y", H2 - 12);
+                dt.setAttribute("fill", "#8b9bb4"); dt.setAttribute("font-size", "10");
+                dt.setAttribute("font-family", "monospace"); dt.setAttribute("text-anchor", "middle");
+                dt.textContent = d.date.slice(5);
+                cumSvg.appendChild(dt);
+            }
+        });
+    }
+
+    // 中英文切换字典
     const i18n = {
         zh: {
-            nav_arch: "系统架构", nav_strat: "策略矩阵", nav_risk: "风控体系", nav_demo: "实时引擎",
-            nav_portal: "Quant Expert 主站 ↗",
+            nav_pnl: "实盘 PnL 业绩", nav_arch: "系统架构", nav_strat: "策略矩阵", nav_risk: "风控体系", nav_portal: "Quant Expert 主站 ↗",
             hero_pill: "HYPERLIQUID L1 (HIP-3) × METATRADER 5 跨市场量化引擎",
-            hero_t1: "连接链上永续流动性与传统外汇市场",
-            hero_t2: "全自动 Delta-Neutral 跨市场套利系统",
+            hero_t1: "连接链上永续流动性与传统外汇市场", hero_t2: "全自动 Delta-Neutral 跨市场套利系统",
             hero_desc: "BC Research 专注于去中心化链上订单簿（Hyperliquid DEX）与传统机构流动性（MT5 CFD）之间的基差回归与资金费率套利。通过纯 Maker 挂单捕获价差与盘口点差，结合毫秒级 WebSocket 事件驱动对冲，实现净敞口动态归零。",
-            cta_explore: "探索实盘策略矩阵", cta_mql5: "访问 Bo Chen (MQL5) ↗",
+            cta_pnl: "查看 30 天实盘 PnL 曲线", cta_arch: "查看系统电路架构图",
             m1: "双边等名义价值中性对冲", m2: "Fast Path 成交流触发对冲", m3: "开仓前硬风控与休市门控", m4: "0.5s 动态锚定追价挂单",
+            pnl_title: "实盘套利净值表现 (2026-10-29 ~ 2026-11-27)",
+            pnl_desc: "真实小资金实盘测试账户（Hyperliquid + MT5 合并净收益，已扣除双边手续费、点差与隔夜库存费），验证净值曲线的平滑爬坡能力。",
+            pk1_l: "30天合并累计净利 (Cumulative PnL)", pk1_s: "双边小资金实盘 (~$550本金 / 月化+12.6%)",
+            pk2_l: "日度盈亏分布 (Win / Loss Days)", pk2_s: "交易日胜率 77.8% (其余为无机会空仓日)",
+            pk3_l: "单日最高盈利 (Best Day)", pk3_s: "2026-11-19 (波动率放大集中收割)",
+            pk4_l: "最大单日回撤 (Max Daily Loss)", pk4_s: "盈亏比极其健康，回撤在隔天迅速收复",
+            hover_tip: "💡 鼠标悬停柱子查看当日精确数据",
+            arch_title: "BC Research 全景电路系统架构图",
+            arch_desc: "顶部总控面板统一调度中间层的核心交易引擎，通过多网关协议同时直连链上 Perp DEX 与传统 MT5 经纪商。",
+            pcb_acp_d: "多策略进程调度、参数热配置与监控总控台",
+            pcb_core_d: "统一报价、订单追踪与跨市场对冲模型（Bot + Hedger 双核）",
             strat_title: "多资产跨市场套利策略矩阵",
             strat_desc: "覆盖主流 G10 外汇与亚洲核心股指，针对每个品种的利息差（Swap vs Funding）与盘口结构定制公允定价中心。",
             jpy_desc: "利用美日货币利率差与 Hyperliquid 贴水结构，围绕资金费率与隔夜息均衡点执行双向均值回归网格。",
             eur_desc: "捕获欧美汇率在链上 DEX 的正向溢价，空 HL 多 MT5 赚取价差收敛与 HL 每小时正向资金费双重收益。",
             jp225_desc: "通过纯 Maker (Post-Only) 挂单赚取日经 225 链上宽盘口点差（20~35 点），搭配毫秒级 MT5 股指 CFD 对冲。",
-            lbl_center: "公允网格中心 (Center)", lbl_step: "网格间距 (Grid Step)", lbl_fx: "点值折算 (FX Pair)", lbl_lev: "杠杆配置 (Leverage)", lbl_unit: "对冲标准单元", lbl_entry: "1σ 开平仓区间",
-            arch_title: "五层解耦工业级交易架构",
-            arch_desc: "交易执行引擎与 Web 控制面板完全进程隔离，支持多品种并发独立运行与断线亚秒级自动重连。",
-            l1_t: "可视化控制面板与实时数据看板", l1_d: "支持 1m 历史价差分布分析（Mean / ±1σ / ±2σ）、PnL 报表统计、双终端日志流与参数热重载。",
-            l2_t: "Bot Core 主报价引擎 (Quoting Leg)", l2_d: "5 秒滑动均值价差采样，锚定 MT5 实时 Tick 计算目标价，每 0.5s 调用 amend_order 动态改单追价。",
-            l3_t: "Hedger Core 极速对冲与对账引擎 (Hedging Leg)", l3_d: "Fast Path 监听 HL userFills 成交流毫秒级市价对冲；Slow Path 每 15s 自动校准双边净敞口。",
-            l4_t: "独立隔离交易所连接器与安全签名网关", l4_d: "本地 EIP-712 Agent API Wallet 签名（仅有交易权、无提币权）；MT5 C-API 独立进程池毫秒级通信。",
+            lbl_center: "公允网格中心", lbl_step: "网格间距", lbl_fx: "点值折算", lbl_lev: "杠杆配置", lbl_unit: "对冲标准单元", lbl_entry: "1σ 开平仓区间",
             risk_title: "实盘八重硬风控与防休市保护体系",
             risk_desc: "专为解决 DEX (7×24) 与传统 CFD (24×5) 跨市场机制差异而设计的全天候安全护栏。",
-            r1_t: "MT5 行情心跳防休市门控", r1_d: "自动校验终端连接状态及 MT5 Tick 时间戳新鲜度。遇到美国感恩节、圣诞节提前休市或临时停盘时，立刻拦截 HL 开单并撤销排队挂单，杜绝单边裸奔。",
-            r2_t: "双边保证金与强平距离熔断", r2_d: "开单前预先核算两端所需保证金，实时监控 HL 强平距离（MIN_LIQ_DISTANCE）与 MT5 预付款维持率，任一端跌破安全红线立即触发双边保护平仓。",
-            r3_t: "Agent 密钥权限物理隔离", r3_d: "云服务器仅部署 Hyperliquid 授权的 API 代理私钥（无任何提币或资金划转权限），主钱包冷存储离线隔离，从架构底层杜绝密钥泄露风险。",
-            demo_t: "核心哲学：Trade Your Equity Curve",
-            demo_d: "承袭自 Turtle Multi Pro 与 Quant Expert 的净值控制理念——不预测市场单边涨跌，只专注捕捉跨市场结构性价差与资金费率失衡，用严格数学纪律实现净值曲线的平滑增长。"
+            r1_t: "MT5 行情心跳防休市门控", r1_d: "自动校验终端连接状态及 MT5 Tick 时间戳新鲜度。遇到美国感恩节、圣诞节提前休市或临时停盘时，立刻拦截 HL 开单并撤销排队挂单。",
+            r2_t: "双边保证金与强平距离熔断", r2_d: "开单前预先核算两端所需保证金，实时监控 HL 强平距离与 MT5 预付款维持率，任一端跌破安全红线立即触发保护平仓。",
+            r3_t: "Agent 密钥权限物理隔离", r3_d: "云服务器仅部署 Hyperliquid 授权的 API 代理私钥（仅有交易权、无提币权），主钱包冷存储离线隔离，保障资金绝对安全。"
         },
         en: {
-            nav_arch: "Architecture", nav_strat: "Strategies", nav_risk: "Risk Engine", nav_demo: "Live Engine",
-            nav_portal: "Quant Expert Portal ↗",
+            nav_pnl: "Live PnL", nav_arch: "Architecture", nav_strat: "Strategies", nav_risk: "Risk Engine", nav_portal: "Quant Expert Portal ↗",
             hero_pill: "HYPERLIQUID L1 (HIP-3) × METATRADER 5 CROSS-VENUE ENGINE",
-            hero_t1: "Bridging On-Chain Perps & Institutional FX Liquidity",
-            hero_t2: "Automated Delta-Neutral Cross-Market Arbitrage",
+            hero_t1: "Bridging On-Chain Perps & Institutional FX Liquidity", hero_t2: "Automated Delta-Neutral Cross-Market Arbitrage",
             hero_desc: "BC Research specializes in statistical basis reversion and funding-carry arbitrage between Hyperliquid DEX order books and MT5 institutional CFDs. Pure maker quoting paired with millisecond WebSocket hedging maintains dynamic net-zero exposure.",
-            cta_explore: "Explore Strategy Matrix", cta_mql5: "Bo Chen (MQL5) ↗",
+            cta_pnl: "View 30-Day Live PnL Curve", cta_arch: "View System Circuit Diagram",
             m1: "Notional Delta-Neutral Hedging", m2: "Event-Driven Fast Path Hedge", m3: "Pre-Trade & Market-Closed Gates", m4: "Dynamic Tick-Snapped Amending",
+            pnl_title: "Verified Live Track Record (2026-10-29 ~ 2026-11-27)",
+            pnl_desc: "Combined net PnL across Hyperliquid and MT5 live accounts (net of all commissions, spreads, and swaps), demonstrating steady equity growth.",
+            pk1_l: "30-Day Cumulative Net PnL", pk1_s: "Live small-cap deployment (~$550 equity / +12.6% mo)",
+            pk2_l: "Win / Loss Day Ratio", pk2_s: "77.8% Active Day Win Rate",
+            pk3_l: "Best Single Day", pk3_s: "2026-11-19 (High volatility spread capture)",
+            pk4_l: "Max Daily Drawdown", pk4_s: "Tight tail risk, recovered immediately next session",
+            hover_tip: "💡 Hover over bars/points for daily exact PnL",
+            arch_title: "BC Research System Circuit Architecture",
+            arch_desc: "Modular execution architecture separating the control panel from the core trading engine and multi-venue exchange gateways.",
+            pcb_acp_d: "Unified Arbitrage Control Panel managing all Bot & Hedger instances",
+            pcb_core_d: "One unified model for quotes, orders and positions across every exchange",
             strat_title: "Multi-Asset Arbitrage Matrix",
-            strat_desc: "Covering G10 FX and Asian equity indices with equilibrium centers calibrated to central-bank swap differentials and funding curves.",
+            strat_desc: "Covering G10 FX and Asian equity indices with equilibrium centers calibrated to swap differentials and funding curves.",
             jpy_desc: "Captures USD/JPY basis divergence around the swap-funding equilibrium center with asymmetric maker quoting.",
             eur_desc: "Harvests positive on-chain EUR premiums by shorting Hyperliquid and hedging long on MT5 for dual spread and funding yield.",
             jp225_desc: "Captures wide on-chain Nikkei 225 order book spreads (20–35 pts) via Post-Only quoting and instant MT5 index CFD hedging.",
             lbl_center: "Equilibrium Center", lbl_step: "Grid Interval", lbl_fx: "FX Conversion", lbl_lev: "Leverage Cap", lbl_unit: "Standard Lot Parity", lbl_entry: "1σ Entry / Exit Band",
-            arch_title: "5-Layer Decoupled Trading Architecture",
-            arch_desc: "Process-isolated execution workers decoupled from the web control panel, featuring sub-second WebSocket recovery.",
-            l1_t: "Web Control Panel & Analytics Dashboard", l1_d: "Real-time 1m spread distribution (±1σ / ±2σ), dual-venue NAV & PnL reporting, live stdout streaming, and hot-reload settings.",
-            l2_t: "Bot Core Quoting Engine (Quoting Leg)", l2_d: "5-second rolling spread sampler anchoring quotes to live MT5 ticks with 0.5s dynamic order amending and hysteresis control.",
-            l3_t: "Hedger Core Execution Engine (Hedging Leg)", l3_d: "Fast Path listens to HL userFills WS for instant IOC hedging; Slow Path reconciles net exposure every 15 seconds.",
-            l4_t: "Isolated Venue Gateways & Non-Custodial Signing", l4_d: "Local EIP-712 Agent API wallet signing (trade-only, zero withdrawal rights) paired with dedicated MT5 C-API IPC workers.",
             risk_title: "8-Layer Hard Risk & Holiday Protection",
             risk_desc: "Engineered specifically to bridge 24/7 decentralized venues with 24/5 traditional CFD trading hours.",
             r1_t: "MT5 Tick-Freshness Holiday Guard", r1_d: "Monitors MT5 connection and server tick freshness in real time. Automatically halts HL entries and cancels resting quotes during holiday early closes.",
             r2_t: "Dual-Venue Margin & Liquidation Guard", r2_d: "Pre-trade margin sufficiency checks combined with live HL liquidation distance and MT5 margin-level circuit breakers.",
-            r3_t: "Physical Key Segregation (Agent Keys)", r3_d: "Cloud VPS instances only hold trade-only Hyperliquid Agent keys while master funds remain safely isolated on cold/hardware wallets.",
-            demo_t: "Core Philosophy: Trade Your Equity Curve",
-            demo_d: "Built upon the equity-control principles of Turtle Multi Pro and Quant Expert—never guessing market direction, strictly harvesting structural cross-venue spreads and funding imbalances."
+            r3_t: "Physical Key Segregation (Agent Keys)", r3_d: "Cloud VPS instances only hold trade-only Hyperliquid Agent keys while master funds remain safely isolated on cold/hardware wallets."
         }
     };
 
@@ -775,6 +1068,8 @@
             if (i18n[curLang][key]) el.innerText = i18n[curLang][key];
         });
     }
+
+    renderPnLCharts();
 </script>
 
 </body>
